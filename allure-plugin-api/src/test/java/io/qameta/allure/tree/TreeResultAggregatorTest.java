@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.qameta.allure.tree.TreeGroup.values;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -157,6 +158,30 @@ public class TreeResultAggregatorTest {
         checkNodeHasOnlyOneTestCasesUids(groupNode, first, second);
     }
 
+    @Test
+    public void shouldSkipResults() throws Exception {
+        OnlyFailedAggregator aggregator = new OnlyFailedAggregator();
+        TreeData treeData = aggregator.supplier(null, null).get();
+        TestRun testRun = mock(TestRun.class);
+        TestCase testCase = mock(TestCase.class);
+        TestCaseResult first = mock(TestCaseResult.class);
+        doReturn(Status.FAILED).when(first).getStatus();
+        TestCaseResult second = mock(TestCaseResult.class);
+        doReturn(Status.BROKEN).when(second).getStatus();
+        TestCaseResult third = mock(TestCaseResult.class);
+        doReturn(Status.PASSED).when(third).getStatus();
+
+
+        aggregator.aggregate(testRun, testCase, first).accept(treeData);
+        aggregator.aggregate(testRun, testCase, second).accept(treeData);
+        aggregator.aggregate(testRun, testCase, third).accept(treeData);
+        assertThat(treeData, notNullValue());
+        assertThat(treeData.getChildren(), hasSize(1));
+        assertThat(treeData.getTime(), notNullValue());
+        assertThat(treeData.getStatistic(), notNullValue());
+        assertThat(treeData.getStatistic().getTotal(), is(1L));
+    }
+
     private TreeData aggregateResultsWithUids(TreeResultAggregator aggregator, String... uids) {
         TreeData treeData = aggregator.supplier(null, null).get();
         Stream.of(uids).forEach(uid -> {
@@ -190,14 +215,14 @@ public class TreeResultAggregatorTest {
     private class OneValueTreeResultAggregator extends TreeResultAggregator {
         @Override
         protected List<TreeGroup> getGroups(TestCaseResult result) {
-            return Collections.singletonList(TreeGroup.values("sampleGroup"));
+            return Collections.singletonList(values("sampleGroup"));
         }
     }
 
     private class FewValuesTreeResultAggregator extends TreeResultAggregator {
         @Override
         protected List<TreeGroup> getGroups(TestCaseResult result) {
-            return Collections.singletonList(TreeGroup.values("first", "second"));
+            return Collections.singletonList(values("first", "second"));
         }
     }
 
@@ -205,14 +230,26 @@ public class TreeResultAggregatorTest {
 
         @Override
         protected List<TreeGroup> getGroups(TestCaseResult result) {
-            return Arrays.asList(TreeGroup.values("first"), TreeGroup.values("second"));
+            return Arrays.asList(values("first"), values("second"));
         }
     }
 
     private class ComplexTreeResultAggregator extends TreeResultAggregator {
         @Override
         protected List<TreeGroup> getGroups(TestCaseResult result) {
-            return Arrays.asList(TreeGroup.values("a", "b"), TreeGroup.values("1", "2"));
+            return Arrays.asList(values("a", "b"), values("1", "2"));
+        }
+    }
+
+    private class OnlyFailedAggregator extends TreeResultAggregator {
+        @Override
+        protected List<TreeGroup> getGroups(TestCaseResult result) {
+            return Collections.singletonList(values("something"));
+        }
+
+        @Override
+        protected boolean shouldProcess(TestCaseResult result) {
+            return Status.FAILED.equals(result.getStatus());
         }
     }
 

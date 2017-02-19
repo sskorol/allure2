@@ -29,6 +29,10 @@ public abstract class TreeResultAggregator implements ResultAggregator<TreeData>
     @Override
     public Consumer<TreeData> aggregate(TestRun testRun, TestCase testCase, TestCaseResult result) {
         return treeData -> {
+            if (!shouldProcess(result)) {
+                return;
+            }
+
             treeData.updateStatistic(result);
             treeData.updateTime(result);
 
@@ -84,5 +88,9 @@ public abstract class TreeResultAggregator implements ResultAggregator<TreeData>
 
     protected String getNodeName(TestCaseResult result) {
         return result.getName();
+    }
+
+    protected boolean shouldProcess(TestCaseResult result) {
+        return true;
     }
 }
