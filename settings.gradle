@@ -4,6 +4,7 @@ include 'allure-plugin-api'
 include 'allure-generator'
 include 'allure-web'
 include 'behaviors-plugin'
+include 'defects-plugin'
 include 'custom-logo-plugin'
 include 'junit-plugin'
 include 'packages-plugin'
@@ -11,6 +12,7 @@ include 'allure-commandline'
 include 'cucumber-json-plugin'
 
 project(':behaviors-plugin').projectDir = new File(settingsDir, 'plugins/behaviors-plugin')
+project(':defects-plugin').projectDir = new File(settingsDir, 'plugins/defects-plugin')
 project(':custom-logo-plugin').projectDir = new File(settingsDir, 'plugins/custom-logo-plugin')
 project(':junit-plugin').projectDir = new File(settingsDir, 'plugins/junit-plugin')
 project(':packages-plugin').projectDir = new File(settingsDir, 'plugins/packages-plugin')

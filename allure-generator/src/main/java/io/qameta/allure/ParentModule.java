@@ -11,7 +11,6 @@ import io.qameta.allure.allure1.Allure1ResultsReader;
 import io.qameta.allure.allure2.Allure2ResultsReader;
 import io.qameta.allure.core.DefaultAttachmentsStorage;
 import io.qameta.allure.core.DefaultTestRunReader;
-import io.qameta.allure.defects.DefectsPlugin;
 import io.qameta.allure.executor.ExecutorPlugin;
 import io.qameta.allure.graph.GraphPlugin;
 import io.qameta.allure.history.HistoryPlugin;
@@ -93,7 +92,6 @@ public class ParentModule extends AbstractModule {
                 new SummaryPlugin(),
                 new GraphPlugin(),
                 new TimelinePlugin(),
-                new DefectsPlugin(),
                 new XunitPlugin(),
                 new HistoryPlugin(),
                 new ExecutorPlugin(),

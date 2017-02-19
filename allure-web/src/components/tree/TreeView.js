@@ -10,14 +10,17 @@ import {behavior} from '../../decorators/index';
 class TreeView extends View {
     template = template;
 
-    initialize({state, tabName, baseUrl}) {
+    initialize({state, tabName, baseUrl, enableGroupsInfo = true}) {
         this.state = state;
         this.baseUrl = baseUrl;
         this.tabName = tabName;
+        this.enableGroupsInfo = enableGroupsInfo;
         this.statusesSelect = new StatusToggleView();
         this.listenTo(this.state, 'change:testcase', (m, testcase) => this.highlightItem(testcase));
         this.listenTo(settings, 'change:visibleStatuses', this.render);
-        this.listenTo(settings, 'change:showGroupInfo', this.render);
+        if (enableGroupsInfo) {
+            this.listenTo(settings, 'change:showGroupInfo', this.render);
+        }
     }
 
     onDomRefresh() {
@@ -62,10 +65,10 @@ class TreeView extends View {
 
     serializeData() {
         const statuses = settings.get('visibleStatuses');
-        const showGroupInfo = settings.get('showGroupInfo');
         return {
             baseUrl: this.baseUrl,
-            showGroupInfo: showGroupInfo,
+            showGroupInfo: this.enableGroupsInfo && settings.get('showGroupInfo'),
+            enableGroupsInfo: this.enableGroupsInfo,
             time: this.collection.time,
             statistic: this.collection.statistic,
             tabName: this.tabName,

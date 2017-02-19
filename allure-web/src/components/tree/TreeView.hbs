@@ -3,7 +3,9 @@
     {{tabName}}
     <span class="pane__controls">
         <a class="fa fa-filter {{b 'tree' 'control'}} {{b 'tree' 'statuses'}}" data-tooltip="Filter test cases by statues"></a>
-        <a class="fa fa-info-circle {{b 'tree' 'control'}} {{b 'tree' 'info'}}" data-tooltip="Toggle groups info"></a>
+        {{#if enableGroupsInfo}}
+            <a class="fa fa-info-circle {{b 'tree' 'control'}} {{b 'tree' 'info'}}" data-tooltip="Toggle groups info"></a>
+        {{/if}}
     </span>
 </h2>
 

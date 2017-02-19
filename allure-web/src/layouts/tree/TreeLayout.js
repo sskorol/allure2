@@ -19,11 +19,9 @@ export default class TreeLayout extends PaneLayout {
         const paneView = this.getChildView('content');
         paneView.expanded = this.state.get('expanded');
         if (!paneView.getRegion('testrun')) {
-            paneView.addPane('testrun', new TreeView({
+            paneView.addPane('testrun', new TreeView({...this.options,
                 collection: this.items,
-                state: this.state,
-                tabName: this.options.tabName,
-                baseUrl: this.options.baseUrl
+                state: this.state
             }));
         }
         this.testcase.updatePanes(this.options.baseUrl, changed);
